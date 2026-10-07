@@ -11,7 +11,7 @@ authors:
 license: MIT
 version: "1.0.0"
 date-released: "2026-10-07"
-repository-code: "https://github.com/USER/fpinn-delta"
+repository-code: "https://github.com/LuisAngel-UPB/fpinn-delta"
 keywords:
   - fractional calculus
   - Caputo derivative
