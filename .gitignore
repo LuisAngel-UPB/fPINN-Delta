@@ -18,3 +18,8 @@ NB04_fPINN_weights/
 notebooks/*.csv
 notebooks/*.png
 notebooks/*.pdf
+
+# C files and binaries written by NB06/NB07 (the reference copy is in c/)
+notebooks/*.c
+notebooks/*_memk*
+memk
