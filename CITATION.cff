@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "fpinn-delta: fractional physics-informed neural networks for the inverse dynamics of a delta parallel robot"
-abstract: "Jupyter notebooks that simulate a delta parallel robot with memory-dependent (Caputo) joint damping, train integer and fractional physics-informed neural networks for its inverse dynamics, and evaluate them open loop and with computed-torque control, including fixed-cost (finite-memory) realizations of the fractional memory term with C kernels."
+abstract: "Jupyter notebooks that simulate a delta parallel robot with memory-dependent (Caputo) joint damping, train integer and fractional physics-informed neural networks for its inverse dynamics, and evaluate them open loop and with computed-torque control on a reduced plant and on a constrained multibody plant, including fixed-cost (finite-memory) realizations of the fractional memory term with C kernels."
 type: software
 authors:
   - family-names: "Angel"
@@ -9,8 +9,8 @@ authors:
     affiliation: "Universidad Pontificia Bolivariana, Bucaramanga, Colombia"
     orcid: "https://orcid.org/0000-0002-9156-9547"
 license: MIT
-version: "1.1.0"
-date-released: "2026-10-08"
+version: "1.2.0"
+date-released: "2026-10-14"
 repository-code: "https://github.com/LuisAngel-UPB/fPINN-Delta"
 keywords:
   - fractional calculus
@@ -21,3 +21,5 @@ keywords:
   - Oustaloup approximation
   - sum of exponentials
   - computed-torque control
+  - multibody dynamics
+  - LuGre friction

@@ -2,18 +2,20 @@
 
 Code and data for the articles
 
-> L. Angel, **Fractional physics-informed neural networks for the inverse dynamics of a delta parallel robot with memory-dependent joint damping**, submitted to "International Journal of Intelligent Robotics and Applications" (2026). Notebooks NB01–NB05.
+> L. Angel, **Learning memory-dependent joint damping of a closed-chain delta robot with fractional physics-informed neural networks**, submitted (2026). Notebooks NB01–NB05 (benchmark A, reduced plant) and NB08 (benchmark B, constrained multibody plant, added in release v1.2.0).
 
-> L. Angel, **Finite-memory realizations of a learned fractional damper for real-time computed-torque control of a delta robot**, submitted to "Journal of the Brazilian Society of Mechanical Sciences and Engineering"(2026). Notebooks NB06–NB07 and the C kernels in `c/` (added in release v1.1.0).
+> L. Angel, **Finite-memory realizations of a learned fractional damper for real-time computed-torque control of a delta robot**, submitted (2026). Notebooks NB06–NB07 and the C kernels in `c/` (added in release v1.1.0).
 
 A reduced 14-parameter inverse-dynamics model of a delta parallel robot is extended with a per-joint Caputo damper `τ_frac = B · D^α q`. A fractional physics-informed neural network (fPINN) predicts the parameters of the rigid-body regressor, while a fractional branch with learnable order `α` and gain `B` captures the memory torque. The L1 Caputo discretization is made differentiable in `α` by interpolation over a grid of 39 orders. The notebooks generate the data, train every model, and evaluate them open loop and in closed loop with computed-torque control plus integral action (CTC + I). Everything is simulated; no hardware is needed.
+
+NB08 replaces the reduced plant by an independent constrained multibody model of the delta robot (closed kinematic chains with Lagrange multipliers and Baumgarte stabilization, slender-rod forearms with distributed mass, payload on the platform). The reduced regressor is identified on it by least squares and becomes the nominal model; the PINN and the fPINN are trained and tested in closed loop with a Caputo damper in the joints and, as a memory that is not fractional, with LuGre friction.
 
 NB06–NB07 keep the identified networks fixed and study how the memory term `D^α q` of the controller can be evaluated at a fixed cost per step, so that the controller can run indefinitely: a short window, the window with an O(1) summation-by-parts tail correction, an Oustaloup filter in parallel modal form and a sum of exponentials (SOE) fitted to the Caputo kernel, compared with the full L1 sum in closed loop, over 60 min of operation with pauses, and in timing (Python and plain C99).
 
 ## Contents
 
 ```
-notebooks/   NB01–NB07, run in this order (all outputs are written next to the notebooks)
+notebooks/   NB01–NB08, run in this order; NB08 needs none of the others (all outputs are written next to the notebooks)
 c/           plain C99 kernels of the memory term (full L1, window + tail, Oustaloup, SOE) with a benchmark
 results/     raw CSV outputs of the full runs used in the articles
 ```
@@ -27,6 +29,7 @@ results/     raw CSV outputs of the full runs used in the articles
 | `NB05_fPINN_MemoriaPINNmem.ipynb` | Retrains nothing. Loads the NB04 `PINNmem` and `fPINN` weights and splits the torque of their memory branches into fractional, viscous and other components by least-squares projection. | `NB05_fPINN_MemoriaPINNmem.csv` |
 | `NB06_fPINN_MemoriaFinita.ipynb` | Keeps the networks fixed and replaces the full L1 sum of the controller's memory term by fixed-cost realizations (window, window + tail, Oustaloup with several orders and bands). Measures the offline error of the memory torque, the closed-loop tracking (CTC + I with the oracle and the fPINN and PINN of NB02/NB04 with 175 trajectories, α = 0.5 seeds 0–9 and α ∈ {0.3, 0.7, 0.9} seeds 0–2; 4 s and 8 s cycles and 60 s of continuous operation) and the cost per update in Python and C. | `NB06_fPINN_ClosedLoop.csv`, `NB06_fPINN_ErrorMemoria.csv`, `NB06_fPINN_Summary.csv`, `NB06_fPINN_Timing.csv`, `NB06_fPINN_TimingC.csv`, `NB06_fPINN_memkernels.c` |
 | `NB07_fPINN_HorizonteLargo.ipynb` | E0: effect of the window + tail correction (see *Changes in v1.1.0*). E1: offline error over 60 min references with pauses at the ready pose, holds at a displaced pick pose and work away from the initial pose. E1b: hold limit of Oustaloup, `B·ω_b^α·|q̃|`, checked against the holds. E2: sum-of-exponentials (SOE) realization, kernel accuracy and closed loop as in NB06. E3: cost per update against operating time for the naive and block-FFT L1 and the fixed-cost realizations, in Python and in C. | `NB07_fPINN_CorreccionCola.csv`, `NB07_fPINN_LargoPorMinuto.csv`, `NB07_fPINN_LargoResumen.csv`, `NB07_fPINN_CotaOustaloup.csv`, `NB07_fPINN_SOE.csv`, `NB07_fPINN_ClosedLoop.csv`, `NB07_fPINN_Summary.csv`, `NB07_fPINN_Timing.csv`, `NB07_fPINN_TimingC.csv`, `NB07_fPINN_memkernels.c` |
+| `NB08_fPINN_PlantaMulticuerpo.ipynb` | Benchmark B. Builds and verifies the constrained multibody plant (energy drift, constraint residual, replay of inverse-dynamics torques), identifies the reduced 14-parameter model on it, generates 175 trajectories with a Caputo damper (`caputo`) or LuGre friction (`lugre`) in the joints, trains PINN and fPINN with seeds 0–2 for each, and runs CTC + I on the multibody plant (Adept-like cycle at time scales 6.4, 3.2 and 1.6, payload 0 and 1 kg) with the nominal model, an oracle and every network. Needs no earlier notebook. | `NB08_fPINN_Verificacion.csv`, `NB08_fPINN_ModeloReducido.csv`, `NB08_fPINN_TrainingLog.csv`, `NB08_fPINN_ClosedLoop.csv`, `NB08_fPINN_Summary.csv`, `fig_nb08_fpinn.png` |
 
 The notebooks were developed after an earlier, unpublished set of baseline notebooks for the integer-order models; comments that mention "notebook 18" or "nb 18" refer to that baseline. Everything it provided (robot model, trajectory generator with the same random stream, training protocol and the CTC + I controller) is reproduced inside these notebooks, so it is not needed.
 
@@ -49,7 +52,7 @@ Put the five notebooks in one folder (they are already together in `notebooks/`)
 
 NB06 and NB07 need the NB02 weights (`NB02_fPINN_*_e150.npz`) and the folder `NB04_fPINN_weights` in the same folder; in quick mode without them they use a stand-in model and say so.
 
-NB01 has no options and runs in about 5 minutes. NB02–NB07 each have a single switch in their first code cell:
+NB01 has no options and runs in about 5 minutes. NB02–NB08 each have a single switch in their first code cell:
 
 - `QUICK = True` (default): fast check of the whole pipeline with few epochs and runs, in about 2 minutes per notebook. Its outputs are tagged (`_e2`, `_e3`, `_QUICK`) so they never mix with the full run, and NB03–NB05 in quick mode read the quick networks of the previous notebooks.
 - `QUICK = False`: runs the complete experiment set of the article, with no other edits.
@@ -65,8 +68,9 @@ Full runs are resumable: every finished network is cached and every closed-loop 
 | NB05 | ~15 s | ~1 min | < 1 GB |
 | NB06 | ~2 min | 40 min – 1.5 h (about 1 000 closed-loop runs) | < 2 GB |
 | NB07 | ~2 min | 50 min – 1 h 40 min (60 min references, ~600 closed-loop runs) | < 3 GB |
+| NB08 | ~3 min | 1–2.5 h (12 networks, 96 closed-loop runs) | < 3 GB |
 
-Total for NB01–NB05: about 13–22 h, best run overnight; NB06–NB07 add about 2–3 h.
+Total for NB01–NB05: about 13–22 h, best run overnight; NB06–NB07 add about 2–3 h and NB08 about 1.5 h.
 
 ## Results in the articles
 
@@ -78,6 +82,8 @@ The final tables and figures are computed from the full-run CSVs in `results/`:
 | `NB04_fPINN_TrainingLog.csv` | 152 networks (NB02 rows included, `Scenario` column) | test and Adept-like torque errors, identified `α̂`, `B̂`, order sweep, null test, history baselines, ablations, paired comparisons |
 | `NB04_fPINN_ClosedLoop.csv` | 825 closed-loop runs (NB03 rows included, quick-check rows removed) | closed-loop tracking table and figure, closed-loop paired comparisons and ablations |
 | `NB05_fPINN_MemoriaPINNmem.csv` | 22 networks | decomposition of the `PINNmem` memory branch (history-baseline discussion) |
+| `NB08_fPINN_Verificacion.csv`, `NB08_fPINN_ModeloReducido.csv` | 7, 24 | verification of the multibody model, reduced-model parameters of benchmark B and structural gap |
+| `NB08_fPINN_TrainingLog.csv`, `NB08_fPINN_ClosedLoop.csv`, `NB08_fPINN_Summary.csv` | 12 networks, 96 runs, 18 rows | benchmark B: torque errors, identified memory and dissipated energy, closed-loop table and figure, paired comparisons |
 | `NB06_fPINN_ErrorMemoria.csv` | 324 | offline error of the memory torque on the task references, Oustaloup and window rows (the `+ tail` rows come from the first NB06 run, see *Changes in v1.1.0*) |
 | `NB06_fPINN_ClosedLoop.csv`, `NB06_fPINN_Summary.csv` | 1 023 runs, 336 rows | closed loop of the full L1 sum, no memory term, plain windows and Oustaloup; gain kept over the integer PINN (`+ tail` rows from the first NB06 run, superseded by NB07) |
 | `NB06_fPINN_Timing.csv` | 65 | Python cost per update and RAM against operating time |
@@ -98,6 +104,11 @@ Network weights are not stored in the repository; they are regenerated by NB02 a
 ```bash
 gcc -O2 -std=gnu99 c/NB07_fPINN_memkernels.c -o memk -lm && ./memk > timing.csv
 ```
+
+## Changes in v1.2.0
+
+- Added NB08 (constrained multibody plant, benchmark B of the first article) and its result tables.
+- NB08 counts a closed-loop run as lost when its Cartesian error exceeds 5 mm and excludes it from the means; the summary prints such runs. In the full run one run was lost (PINN, LuGre, seed 2, time scale 1.6, 0 kg): its error grew to 0.83 m with 8.5 % of the samples saturated. The row is kept in `NB08_fPINN_ClosedLoop.csv`.
 
 ## Changes in v1.1.0
 

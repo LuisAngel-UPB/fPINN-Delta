@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2.0 (2026-10-14)
+- Added `NB08_fPINN_PlantaMulticuerpo.ipynb`: constrained multibody plant of the delta robot (benchmark B), with a Caputo damper or LuGre friction in the joints, PINN and fPINN with seeds 0–2, and CTC + I on the multibody plant.
+- Added the result tables `results/NB08_*`.
+- Closed-loop runs whose Cartesian error exceeds 5 mm are reported as lost and excluded from the summary means (see the README).
+
 ## v1.1.0 (2026-10-08)
 - Added `NB06_fPINN_MemoriaFinita.ipynb` and `NB07_fPINN_HorizonteLargo.ipynb`: fixed-cost realizations of the learned Caputo memory term (window, window + tail correction, Oustaloup, sum of exponentials) in the CTC + I loop, 60 min operation and timing in Python and C.
 - Added `c/NB07_fPINN_memkernels.c` (plain C99 kernels with benchmark) and the result tables `results/NB06_*` and `results/NB07_*`.
