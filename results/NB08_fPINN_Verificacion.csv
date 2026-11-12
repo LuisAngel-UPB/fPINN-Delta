@@ -1,0 +1,8 @@
+Check,Value
+free motion 2 s: max energy drift (J),0.0026515052457840582
+free motion 2 s: initial potential energy magnitude (J),5.674940713070754
+free motion 2 s: max constraint residual |Phi| (m^2),2.204206551575938e-05
+free motion 2 s: final |p - FK(q)| (m),1.139141553463714e-05
+replay of inverse dynamics: max |q error| (rad),1.0696036034429923e-05
+replay of inverse dynamics: duration (s),9.4665
+replay of inverse dynamics: max |Phi| (m^2),3.7915868229265737e-06
