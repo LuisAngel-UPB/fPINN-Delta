@@ -2,9 +2,9 @@
 
 Code and data for the articles
 
-> L. Angel, **Fractional physics-informed neural networks for the inverse dynamics of a delta parallel robot with memory-dependent joint damping**, submitted to *Nonlinear Dynamics* (2026). Notebooks NB01–NB05.
+> L. Angel, **Fractional physics-informed neural networks for the inverse dynamics of a delta parallel robot with memory-dependent joint damping**, submitted to "International Journal of Intelligent Robotics and Applications" (2026). Notebooks NB01–NB05.
 
-> L. Angel, **Finite-memory realizations of a learned fractional damper for real-time computed-torque control of a delta robot**, submitted (2026). Notebooks NB06–NB07 and the C kernels in `c/` (added in release v1.1.0).
+> L. Angel, **Finite-memory realizations of a learned fractional damper for real-time computed-torque control of a delta robot**, submitted to "Journal of the Brazilian Society of Mechanical Sciences and Engineering"(2026). Notebooks NB06–NB07 and the C kernels in `c/` (added in release v1.1.0).
 
 A reduced 14-parameter inverse-dynamics model of a delta parallel robot is extended with a per-joint Caputo damper `τ_frac = B · D^α q`. A fractional physics-informed neural network (fPINN) predicts the parameters of the rigid-body regressor, while a fractional branch with learnable order `α` and gain `B` captures the memory torque. The L1 Caputo discretization is made differentiable in `α` by interpolation over a grid of 39 orders. The notebooks generate the data, train every model, and evaluate them open loop and in closed loop with computed-torque control plus integral action (CTC + I). Everything is simulated; no hardware is needed.
 
