@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.0 (2026-11)
+- Added `NB09_fPINN_TiempoC.ipynb`, `c/NB09_fPINN_timing_bench.c`, `c/NB07_fPINN_memkernels_lib.h` and `results/NB09_fPINN_TimingC_Repetido.csv`: repeated timing of the fixed-cost C kernels with precomputed inputs, loop overhead and per-update percentiles.
+- Note: the NB06/NB07 files listed under v1.1.0 were first committed with v1.2.0 (the v1.1.0 tag archive lacks them); this release contains everything.
+
 ## v1.2.0 (2026-10-14)
 - Added `NB08_fPINN_PlantaMulticuerpo.ipynb`: constrained multibody plant of the delta robot (benchmark B), with a Caputo damper or LuGre friction in the joints, PINN and fPINN with seeds 0–2, and CTC + I on the multibody plant.
 - Added the result tables `results/NB08_*`.
